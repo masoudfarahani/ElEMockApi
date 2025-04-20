@@ -1,0 +1,46 @@
+﻿@using ELE.MockApi.Components.Forms
+@using ELE.MockApi.Components.Pages
+@using ELE.MockApi.Core.Models
+@using ELE.MockApi.Core.Service
+@using ELE.MockApi.Core.FormModels
+@using ELE.MockApi.Shared
+@using MudBlazor
+@inject EndpointService EndpointService
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+@inject AppEvents appEvents
+@implements IDisposable
+<MudPaper Class="pa-4">
+    <MudTable Items="@endpoints" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@loading">
+        <HeaderContent>
+            <MudTh>HTTP Method</MudTh>
+            <MudTh>Base URL</MudTh>
+            <MudTh>Rule</MudTh>
+            <MudTh>Responses</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="HTTP Method">@context.HttpMethod</MudTd>
+            <MudTd DataLabel="Base URL">@context.BaseUrl</MudTd>
+            <MudTd DataLabel="Rule">@context.Rule</MudTd>
+            <MudTd DataLabel="Responses">
+                @foreach (var response in context.Responses)
+                {
+                    <MudChip T="HttpStatus" Color="Color.Primary" Size="Size.Small" Class="mr-1" OnClick="@(() => ShowResponseDetails(response))">@response.Status</MudChip>
+                }
+            </MudTd>
+            <MudTd >
+                <MudIconButton OnClick="()=>DeleteEndpoint(context.Id)" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"></MudIconButton>
+                <MudIconButton OnClick="()=>SelectForUpdate(context)" Icon="@Icons.Material.Filled.Edit" aria-label="delete" Color="Color.Warning"></MudIconButton>
+            </MudTd>
+
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50 }"
+                           @bind-PageSize="pagination.PageSize"
+                           @bind-CurrentPage="pagination.PageNumber"
+                           TotalItems="@pagination.TotalCount" />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
+

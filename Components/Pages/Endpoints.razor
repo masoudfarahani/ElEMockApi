@@ -1,0 +1,26 @@
+﻿@page "/"
+@page "/endpoints"
+@using ELE.MockApi.Components.Forms
+@using ELE.MockApi.Core.Models
+@using ELE.MockApi.Core.Service
+@using ELE.MockApi.Core.FormModels
+@using MudBlazor
+@inject EndpointService EndpointService
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+
+<MudStack Spacing="16">
+    <MudPaper ><CreateEndpoint /></MudPaper>
+    <MudPaper ><EndpointList /></MudPaper>
+</MudStack>
+
+
+
+
+
+
+
+@code {
+
+}
+
