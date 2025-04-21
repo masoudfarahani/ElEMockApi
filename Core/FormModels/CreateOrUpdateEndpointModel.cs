@@ -16,7 +16,7 @@ namespace ELE.MockApi.Core.FormModels
         public Guid Id { get; set; }
 
         public HttpStatus Status { get; set; }
-        public string Body { get; set; }
+        public string? Body { get; set; }
     }
 
     public enum HttpStatus

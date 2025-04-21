@@ -1,14 +1,17 @@
 using ELE.MockApi.Core.FormModels;
 using ELE.MockApi.Core.Models;
 using ELE.MockApi.Core.Service;
+using ELE.MockApi.Migrations;
+using Jsbeautifier;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
+using System.Text.RegularExpressions;
 
 namespace ELE.MockApi.Components.Forms
 {
     public partial class CreateEndpoint
     {
-
+        private Beautifier beautifier = new Beautifier();
         private MudForm form;
         private bool success;
         private string[] errors;
@@ -25,6 +28,27 @@ namespace ELE.MockApi.Components.Forms
         protected override void OnInitialized()
         {
             AppEvents.OnEndpointSelectd += GetSelectedModel;
+        }
+
+        public void BeautifyRule()
+        {
+            string prettyJs = beautifier.Beautify(model.Rule);
+            this.model.Rule = prettyJs;
+            StateHasChanged();
+        }
+
+        public void BeautifyResponseBody(Guid rsponseId)
+        {
+            var resp = this.model.Responses.FirstOrDefault(c=>c.Id== rsponseId);   
+            string prettyJs = beautifier.Beautify(resp.Body);
+            resp.Body= prettyJs;
+            StateHasChanged();
+        }
+
+        private string ValidateBaseUrl(string url)
+        {
+            string pattern = @"^((https?:\/\/)?([\w-]+\.)+[\w-]+)?(\/[\w\-.\/?%&=]*)?$";
+            return Regex.IsMatch(model.BaseUrl, pattern, RegexOptions.IgnoreCase)?"":"Invalid url";
         }
 
         public void Dispose()
