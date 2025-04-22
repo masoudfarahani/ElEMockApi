@@ -34,6 +34,7 @@ public class Program
         });
 
         builder.Services.AddScoped<EndpointService>();
+        builder.Services.AddScoped<CallLogService>();
 
         builder.Services.AddMudServices();
 

@@ -1,0 +1,39 @@
+@using ELE.MockApi.Core.Models
+@using ELE.MockApi.Core.Service
+@using ELE.MockApi.Core.FormModels
+@using MudBlazor
+@using ELE.MockApi.Core.Models
+
+<MudDialog>
+    <DialogContent>
+
+        
+        <MudText Typo="Typo.body1" Class="mt-2">Response Body:</MudText>
+        <MudPaper Class="pa-4 mt-2" Style="max-height: 400px; overflow-y: auto;">
+            <pre><code>@Response</code></pre>
+        </MudPaper>
+
+        <MudText Typo="Typo.body1" Class="mt-2">Request Body:</MudText>
+        <MudPaper Class="pa-4 mt-2" Style="max-height: 400px; overflow-y: auto;">
+            <pre><code>@Body</code></pre>
+        </MudPaper>
+
+
+        <MudText Typo="Typo.body1" Class="mt-2">Request Headers:</MudText>
+        <MudPaper Class="pa-4 mt-2" Style="max-height: 400px; overflow-y: auto;">
+            <pre><code>@Header</code></pre>
+        </MudPaper> 
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Cancel">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+    [Parameter] public string Response { get; set; }
+    [Parameter] public string Body { get; set; }
+    [Parameter] public string Header { get; set; }
+
+
+    void Cancel() => MudDialog.Cancel();
+}

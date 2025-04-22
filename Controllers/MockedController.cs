@@ -1,5 +1,6 @@
 ﻿using ELE.MockApi.Controllers.Filters;
 using ELE.MockApi.Core.Db;
+using ELE.MockApi.Core.Models;
 using ELE.MockApi.Core.Service;
 using Jint;
 using Jint.Runtime;
@@ -16,10 +17,13 @@ namespace ELE.MockApi.Controllers
     {
         private readonly ILogger<MockedController> _logger;
         private readonly DataBaseContext _context;
-        public MockedController(ILogger<MockedController> logger, DataBaseContext context)
+        private readonly CallLogService callLogService;
+
+        public MockedController(ILogger<MockedController> logger, DataBaseContext context, CallLogService callLogService)
         {
             _logger = logger;
             _context = context;
+            this.callLogService = callLogService;
         }
 
         [HttpGet]
@@ -66,10 +70,25 @@ namespace ELE.MockApi.Controllers
 
             var result = evaluator.PrepareResponseBody(availableResponse.Body);
 
+           await LogCall(this.HttpContext.Request.Path,requestBody, method, headers, status, result);
+
+           
+
             if (result != null)
                 return StatusCode(status, JsonSerializer.Deserialize<object>(result, new JsonSerializerOptions { WriteIndented = true }));
             else
                 return StatusCode(status);
+        }
+
+        private async Task LogCall(string url, object? requestBody, string method, IHeaderDictionary headers, int status, string? result)
+        {
+            var log = new ApiCallLog(url, method, status.ToString(), JsonSerializer.Serialize(headers))
+            {
+                Body = JsonSerializer.Serialize(requestBody),
+                Response = result
+            };
+
+            await callLogService.Add(log);
         }
     }
 }

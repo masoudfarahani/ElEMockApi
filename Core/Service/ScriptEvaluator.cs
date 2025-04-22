@@ -46,7 +46,7 @@ namespace ELE.MockApi.Core.Service
         {
             if (headers.Any())
             {
-                var headerJson = Newtonsoft.Json.JsonConvert.SerializeObject(headers);
+                var headerJson = JsonSerializer.Serialize(headers);
 
                 Engine.SetValue(KeywordsReplacements.RequestHeaders, headerJson);
             }
@@ -56,7 +56,7 @@ namespace ELE.MockApi.Core.Service
         {
             if (queries.Any())
             {
-                var queriesJson = Newtonsoft.Json.JsonConvert.SerializeObject(queries);
+                var queriesJson = JsonSerializer.Serialize(queries);
 
                 Engine.SetValue(KeywordsReplacements.QueryStrings, queriesJson);
             }
