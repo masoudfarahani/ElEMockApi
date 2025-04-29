@@ -15,13 +15,13 @@ namespace ELE.MockApi.Controllers
     [ApiController]
     public class MockedController : ControllerBase
     {
-        private readonly ILogger<MockedController> _logger;
         private readonly DataBaseContext _context;
         private readonly CallLogService callLogService;
+        private readonly LogService _logService;
 
-        public MockedController(ILogger<MockedController> logger, DataBaseContext context, CallLogService callLogService)
+        public MockedController(LogService logger, DataBaseContext context, CallLogService callLogService)
         {
-            _logger = logger;
+            _logService = logger;
             _context = context;
             this.callLogService = callLogService;
         }
@@ -35,12 +35,13 @@ namespace ELE.MockApi.Controllers
 
         public async Task<IActionResult> Action(string url, object? requestBody)
         {
-            var requestPath = HttpUtility.UrlDecode(url).ToLower();
+            
+            var requestPath = HttpUtility.UrlDecode($"/{url}").ToLower();
             var method = this.HttpContext.Request.Method.ToLower();
             var headers = this.HttpContext.Request.Headers;
             var queries = this.HttpContext.Request.Query;
 
-            var evaluator = new ScriptEvaluator(_logger);
+            var evaluator = new ScriptEvaluator(_logService);
             evaluator.SetRequestBody(requestBody);
             evaluator.SetRequestHeaders(headers);
             evaluator.SetRequestQueryStrings(queries);
@@ -65,7 +66,6 @@ namespace ELE.MockApi.Controllers
             if (availableResponse == null)
             {
                 return NotFound($"Correspond response not declared for api (status code {status})");
-
             }
 
             var result = evaluator.PrepareResponseBody(availableResponse.Body);

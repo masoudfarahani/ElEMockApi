@@ -8,7 +8,9 @@ namespace ELE.MockApi.Core.Db
     {
         public DbSet<MockEndpoint> Endpoints { get; set; }
         public DbSet<ApiCallLog> CallLogs { get; set; }
-        public DbSet<Log> Logs { get; set; }
+        public DbSet<Log> Logs{ get; set; }
+      
+      
 
 
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
@@ -35,7 +37,7 @@ namespace ELE.MockApi.Core.Db
 
             modelBuilder.Entity<Log>().HasKey(c => c.Id);
             modelBuilder.Entity<Log>().Property(c => c.Id).ValueGeneratedNever();
-            modelBuilder.Entity<Log>().Property(c => c.Content).HasMaxLength(300).IsRequired();
+            modelBuilder.Entity<Log>().Property(c => c.Content).HasMaxLength(4000).IsRequired();
 
         }
     }

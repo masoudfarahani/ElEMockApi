@@ -1,33 +1,33 @@
 using ELE.MockApi.Core.Db;
-using ELE.MockApi.Core.FormModels;
 using ELE.MockApi.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ELE.MockApi.Core.Service
 {
-    public class CallLogService
+    public class LogService
     {
         private readonly DataBaseContext _dbContext;
 
-        public CallLogService(DataBaseContext dbContext)
+        public LogService(DataBaseContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task Add(ApiCallLog model)
+        public async Task Add(Log model)
         {
-            _dbContext.CallLogs.Add(model);
+            _dbContext.Logs.Add(model);
             await _dbContext.SaveChangesAsync();
         }
 
 
 
-        public async Task<(List<ApiCallLog> Items, int TotalCount)> GetApiCallLogsAsync(int pageNumber, int pageSize, string urlFilter = "")
+        public async Task<(List<Log> Items, int TotalCount)> GetLogsAsync(int pageNumber, int pageSize, LogType? logType)
         {
-            var query = _dbContext.CallLogs.AsQueryable();
+            var query = _dbContext.Logs.AsQueryable();
 
-            if(!string.IsNullOrWhiteSpace(urlFilter))
-                query=query.Where(c=>c.Url.Contains(urlFilter));
+            if (logType.HasValue)
+                query = query.Where(c => c.LogType == logType);
+
 
             query = query.OrderByDescending(e => e.DateTime);
 

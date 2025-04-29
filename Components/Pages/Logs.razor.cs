@@ -9,25 +9,24 @@ namespace ELE.MockApi.Components.Pages
 {
     public partial class Logs
     {
-        private List<ApiCallLog > logs = new();
+        private List<ApiCallLog> logs = new();
         private PaginationModel pagination = new();
         private bool loading;
+        private string filterUrl = "";
         protected override async Task OnInitializedAsync()
         {
             await LoadLogsAsync();
         }
-
-    
 
         private async Task LoadLogsAsync()
         {
             loading = true;
             try
             {
-                var (items, totalCount) = await CallLogService.GetApiCallLogsAsync(pagination.PageNumber, pagination.PageSize);
+                var (items, totalCount) = await CallLogService.GetApiCallLogsAsync(pagination.PageNumber, pagination.PageSize,filterUrl);
                 logs = items;
                 pagination.TotalCount = totalCount;
-                StateHasChanged();
+                //StateHasChanged();
             }
             catch (Exception ex)
             {
@@ -39,7 +38,7 @@ namespace ELE.MockApi.Components.Pages
             }
         }
 
-        private async Task ShowDetails(string response,string body,string headers)
+        private async Task ShowDetails(string response, string body, string headers)
         {
             var parameters = new DialogParameters
             {
@@ -56,6 +55,13 @@ namespace ELE.MockApi.Components.Pages
             };
 
             await DialogService.ShowAsync<LogDetailDialog>("Log Details", parameters, options);
+        }
+
+
+        private async Task OnSearch(string text)
+        {
+            filterUrl = text.ToString();
+            await LoadLogsAsync();
         }
     }
 }

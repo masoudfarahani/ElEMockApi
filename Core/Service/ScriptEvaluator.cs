@@ -1,4 +1,5 @@
-﻿using Jint;
+﻿using ELE.MockApi.Core.Models;
+using Jint;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -10,13 +11,17 @@ namespace ELE.MockApi.Core.Service
     public class ScriptEvaluator
     {
         private const string nameTokens = "abcvefghijklmnopqrstuvwxyz";
-        public ILogger _logger { get; private set; }
+        public LogService _logService { get; private set; }
         public Engine Engine { get; private set; }
         private static Random rnd = new Random();
-        public ScriptEvaluator(ILogger logger)
+        public ScriptEvaluator(LogService logger)
         {
-            _logger = logger;
-            Engine = new Engine().SetValue("console", new { log = new Action<object>(c => logger.LogInformation(c.ToString())) });
+            _logService = logger;
+            Engine = new Engine().SetValue("console", new
+            {
+                log = new Action<object>( c => 
+            _logService.Add(new Log(c?.ToString()??"-") { LogType = LogType.UserLog }).Wait())
+            });
         }
 
         public void SetRequestBody(object? requestBody)

@@ -1,6 +1,7 @@
 using Acornima;
 using ELE.MockApi.Components;
 using ELE.MockApi.Controllers.Filters;
+using ELE.MockApi.Controllers.MiddleWare;
 using ELE.MockApi.Core.Db;
 using ELE.MockApi.Core.Service;
 using ELE.MockApi.Shared;
@@ -16,8 +17,6 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        
-
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -35,6 +34,7 @@ public class Program
 
         builder.Services.AddScoped<EndpointService>();
         builder.Services.AddScoped<CallLogService>();
+        builder.Services.AddScoped<LogService>();
 
         builder.Services.AddMudServices();
 
@@ -47,6 +47,11 @@ public class Program
             var db = scope.ServiceProvider.GetRequiredService<DataBaseContext>();
             db.Database.Migrate();
         }
+
+        app.UseWhen(context => context.Request.Path.StartsWithSegments("/Mocked"), appBuilder =>
+        {
+            appBuilder.UseMiddleware<ExceptionMiddleware>();
+        });
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
