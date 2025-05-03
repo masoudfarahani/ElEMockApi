@@ -9,10 +9,10 @@ namespace ELE.MockApi.Components.Pages
 {
     public partial class Logs
     {
-        private List<ApiCallLog> logs = new();
+        private List<Log> logs = new();
         private PaginationModel pagination = new();
         private bool loading;
-        private string filterUrl = "";
+        private LogType? logtypeFilter = null;
         protected override async Task OnInitializedAsync()
         {
             await LoadLogsAsync();
@@ -23,10 +23,9 @@ namespace ELE.MockApi.Components.Pages
             loading = true;
             try
             {
-                var (items, totalCount) = await CallLogService.GetApiCallLogsAsync(pagination.PageNumber, pagination.PageSize,filterUrl);
+                var (items, totalCount) = await LogService.GetLogsAsync(pagination.PageNumber, pagination.PageSize,null);
                 logs = items;
                 pagination.TotalCount = totalCount;
-                //StateHasChanged();
             }
             catch (Exception ex)
             {
@@ -38,29 +37,11 @@ namespace ELE.MockApi.Components.Pages
             }
         }
 
-        private async Task ShowDetails(string response, string body, string headers)
+    
+
+        private async Task OnSearch(LogType logType)
         {
-            var parameters = new DialogParameters
-            {
-                ["Response"] = response,
-                ["Body"] = body,
-                ["Header"] = headers
-            };
-
-            var options = new DialogOptions
-            {
-                CloseButton = true,
-                MaxWidth = MaxWidth.Medium,
-                FullWidth = true
-            };
-
-            await DialogService.ShowAsync<LogDetailDialog>("Log Details", parameters, options);
-        }
-
-
-        private async Task OnSearch(string text)
-        {
-            filterUrl = text.ToString();
+            logtypeFilter = logType;
             await LoadLogsAsync();
         }
     }

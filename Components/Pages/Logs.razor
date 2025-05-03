@@ -1,4 +1,4 @@
-﻿@page "/log"
+﻿@page "/logs"
 
 @using ELE.MockApi.Components.Forms
 @using ELE.MockApi.Components.Pages
@@ -7,35 +7,26 @@
 @using ELE.MockApi.Core.FormModels
 @using ELE.MockApi.Shared
 @using MudBlazor
-@inject CallLogService CallLogService
+@inject LogService LogService
 @inject IDialogService DialogService
 @rendermode InteractiveServer
 
 <MudPaper Class="pa-4">
     <MudTable Items="@logs" Dense="true" Hover="true" Bordered="true"  Striped="true" Loading="@loading">
         <ToolBarContent>
-            <MudText Typo="Typo.h6">Api call logs</MudText>
+            <MudText Typo="Typo.h6">Logs</MudText>
             <MudSpacer />
-            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))"  Placeholder="Search"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField T="LogType" ValueChanged="@(s=>OnSearch(s))"  Placeholder="Search"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh>HTTP Method</MudTh>
-            <MudTh>URL</MudTh>
-            <MudTh>Status</MudTh>
+            <MudTh>Content</MudTh>
             <MudTh>DateTime</MudTh>
-            @* <MudTh>Response</MudTh>
-            <MudTh>Body</MudTh>
-            <MudTh>Headers</MudTh> *@
+            <MudTh>LogType</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="HTTP Method">@context.Method</MudTd>
-            <MudTd DataLabel="URL">@context.Url</MudTd>
-            <MudTd DataLabel="Status">@context.Status</MudTd>
-            <MudTd DataLabel="DateTime">@context.DateTime</MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.PanoramaFishEye" aria-label="details" OnClick="@(() => ShowDetails(context.Response,context.Body,context.Headers))" />
-            </MudTd>
-
+            <MudTd DataLabel="HTTP Method">@context.Content</MudTd>
+            <MudTd DataLabel="URL">@context.DateTime</MudTd>
+            <MudTd DataLabel="Status">@context.LogType</MudTd>
         </RowTemplate>
        
         <PagerContent>
