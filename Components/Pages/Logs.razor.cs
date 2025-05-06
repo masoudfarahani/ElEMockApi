@@ -13,6 +13,34 @@ namespace ELE.MockApi.Components.Pages
         private PaginationModel pagination = new();
         private bool loading;
         private LogType? logtypeFilter = null;
+
+        private string _buttonText = "All Logs";
+
+        private async Task SetButtonText(string text)
+        {
+            if (_buttonText == text)
+                return;
+
+            _buttonText = text;
+
+            switch (text)
+            {
+                case "All Logs":
+                    logtypeFilter = null;
+                    break;
+                case "App Logs":
+                    logtypeFilter = LogType.AppLog;
+                    break;
+                case "User Logs":
+                    logtypeFilter = LogType.UserLog;
+                    break;
+            }
+
+
+          
+            await LoadLogsAsync();
+        }
+
         protected override async Task OnInitializedAsync()
         {
             await LoadLogsAsync();
@@ -23,7 +51,7 @@ namespace ELE.MockApi.Components.Pages
             loading = true;
             try
             {
-                var (items, totalCount) = await LogService.GetLogsAsync(pagination.PageNumber, pagination.PageSize,null);
+                var (items, totalCount) = await LogService.GetLogsAsync(pagination.PageNumber, pagination.PageSize,logtypeFilter);
                 logs = items;
                 pagination.TotalCount = totalCount;
             }
@@ -36,13 +64,6 @@ namespace ELE.MockApi.Components.Pages
                 loading = false;
             }
         }
-
     
-
-        private async Task OnSearch(LogType logType)
-        {
-            logtypeFilter = logType;
-            await LoadLogsAsync();
-        }
     }
 }

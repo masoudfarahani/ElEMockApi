@@ -53,7 +53,9 @@ namespace ELE.MockApi.Core.Service
             {
                 var headerJson = JsonSerializer.Serialize(headers);
 
-                Engine.SetValue(KeywordsReplacements.RequestHeaders, headerJson);
+                Engine.Execute($"var {KeywordsReplacements.RequestHeaders} = JSON.parse('{headerJson}');");
+
+                //Engine.SetValue(KeywordsReplacements.RequestHeaders, headerJson);
             }
         }
 
@@ -61,9 +63,9 @@ namespace ELE.MockApi.Core.Service
         {
             if (queries.Any())
             {
-                var queriesJson = JsonSerializer.Serialize(queries);
+                var queriesJson = JsonSerializer.Serialize(queries.ToDictionary());
 
-                Engine.SetValue(KeywordsReplacements.QueryStrings, queriesJson);
+                Engine.Execute($"var {KeywordsReplacements.QueryStrings} = JSON.parse('{queriesJson}');");
             }
         }
 

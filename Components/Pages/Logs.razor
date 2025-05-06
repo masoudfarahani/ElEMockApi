@@ -16,9 +16,18 @@
         <ToolBarContent>
             <MudText Typo="Typo.h6">Logs</MudText>
             <MudSpacer />
-            <MudTextField T="LogType" ValueChanged="@(s=>OnSearch(s))"  Placeholder="Search"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            @* <MudTextField T="LogType" ValueChanged="@(s=>OnSearch(s))"  Placeholder="Search"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField> *@
+
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                <MudButton>@_buttonText</MudButton>
+                <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Style="align-self: auto;">
+                    <MudMenuItem OnClick="@(() => SetButtonText("All Logs"))">All Logs</MudMenuItem>
+                    <MudMenuItem OnClick="@(() => SetButtonText("App Logs"))">App Logs</MudMenuItem>
+                    <MudMenuItem OnClick="@(() => SetButtonText("User Logs"))">User Logs</MudMenuItem>
+                </MudMenu>
+            </MudButtonGroup>
         </ToolBarContent>
-        <HeaderContent>
+        <HeaderContent >
             <MudTh>Content</MudTh>
             <MudTh>DateTime</MudTh>
             <MudTh>LogType</MudTh>
