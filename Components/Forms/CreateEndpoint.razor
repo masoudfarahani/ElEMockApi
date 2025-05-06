@@ -1,0 +1,77 @@
+﻿@using ELE.MockApi.Core.Models
+@using ELE.MockApi.Core.Service
+@using ELE.MockApi.Core.FormModels
+@using ELE.MockApi.Shared
+@using MudBlazor
+@inject EndpointService EndpointService
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+@inject AppEvents AppEvents
+@implements IDisposable
+<MudPaper Class="pa-4">
+    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+        <MudSelect T="AvailableHttpMethods"
+                   Label="HTTP Method"
+                   @bind-Value="model.HttpMethod"
+                   Required="true"
+                   AnchorOrigin="Origin.BottomLeft"
+                   Strict="true"
+                   Clearable="true">
+            @foreach (var method in Enum.GetValues<AvailableHttpMethods>())
+            {
+                <MudSelectItem Value="@method">@method</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudTextField T="string" @bind-Value="model.BaseUrl" Label="Base URL" Required="true" RequiredError="Base URL is required!" Validation="@(new Func<string, string>(ValidateBaseUrl))" />
+
+        <MudTextField @bind-Value="model.Rule" Label="Rule"  Lines="6" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AutoAwesome" OnAdornmentClick="BeautifyRule" />
+
+
+
+        <MudText Typo="Typo.h6" Class="mt-4">Responses</MudText>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" FullWidth="false" OnClick="@AddResponse">Add Response</MudButton>
+
+
+        @foreach (var response in model.Responses)
+        {
+            <MudPaper Class="pa-4 mb-2">
+                <MudSelect T="HttpStatus"
+                           Label="HTTP Status"
+                           @bind-Value="response.Status"
+                           Required="true"
+                           AnchorOrigin="Origin.BottomLeft"
+                           Strict="true"
+                           Clearable="true">
+                    @foreach (var status in Enum.GetValues<HttpStatus>())
+                    {
+                        <MudSelectItem Value="@status">@status</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudTextField @bind-Value="response.Body" Label="Response Body" Required="false"  Lines="6" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AutoAwesome" OnAdornmentClick="@(()=>BeautifyResponseBody(response.Id))" />
+                <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => RemoveResponse(response))" Class="mt-2">Remove Response</MudButton>
+            </MudPaper>
+        }
+
+
+
+
+        <MudGrid Spacing="5" Justify="Justify.Center" class="mt-5">
+            <MudItem>
+                <MudButton Variant="Variant.Filled" Color="IsUpdate?Color.Secondary: Color.Primary" OnClick="@CreateOrUpdate" Class="mt-4">@(IsUpdate ? "Update" : "Create") Endpoint</MudButton>
+            </MudItem>
+
+            @if (IsUpdate)
+            {
+                <MudItem>
+                    <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="@(()=>model=new())" Class="mt-4">Cancel Update</MudButton>
+                </MudItem>
+
+            }
+        </MudGrid>
+
+    </MudForm>
+</MudPaper>
+
+

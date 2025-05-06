@@ -1,0 +1,50 @@
+﻿@page "/apilogs"
+
+@using ELE.MockApi.Components.Forms
+@using ELE.MockApi.Components.Pages
+@using ELE.MockApi.Core.Models
+@using ELE.MockApi.Core.Service
+@using ELE.MockApi.Core.FormModels
+@using ELE.MockApi.Shared
+@using MudBlazor
+@inject CallLogService CallLogService
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+
+<MudPaper Class="pa-4">
+    <MudTable Items="@logs" Dense="true" Hover="true" Bordered="true"  Striped="true" Loading="@loading">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Api call logs</MudText>
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))"  Placeholder="Search"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>HTTP Method</MudTh>
+            <MudTh>URL</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh>DateTime</MudTh>
+            @* <MudTh>Response</MudTh>
+            <MudTh>Body</MudTh>
+            <MudTh>Headers</MudTh> *@
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="HTTP Method">@context.Method</MudTd>
+            <MudTd DataLabel="URL">@context.Url</MudTd>
+            <MudTd DataLabel="Status">@context.Status</MudTd>
+            <MudTd DataLabel="DateTime">@context.DateTime</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.PanoramaFishEye" aria-label="details" OnClick="@(() => ShowDetails(context.Response,context.Body,context.Headers))" />
+            </MudTd>
+
+        </RowTemplate>
+       
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50 }"
+                           @bind-PageSize="pagination.PageSize"
+                           @bind-CurrentPage="pagination.PageNumber"
+                           TotalItems="@pagination.TotalCount" />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
+
+

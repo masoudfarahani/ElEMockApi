@@ -1,0 +1,50 @@
+﻿@page "/logs"
+
+@using ELE.MockApi.Components.Forms
+@using ELE.MockApi.Components.Pages
+@using ELE.MockApi.Core.Models
+@using ELE.MockApi.Core.Service
+@using ELE.MockApi.Core.FormModels
+@using ELE.MockApi.Shared
+@using MudBlazor
+@inject LogService LogService
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+
+<MudPaper Class="pa-4">
+    <MudTable Items="@logs" Dense="true" Hover="true" Bordered="true"  Striped="true" Loading="@loading">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Logs</MudText>
+            <MudSpacer />
+            @* <MudTextField T="LogType" ValueChanged="@(s=>OnSearch(s))"  Placeholder="Search"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField> *@
+
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                <MudButton>@_buttonText</MudButton>
+                <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Style="align-self: auto;">
+                    <MudMenuItem OnClick="@(() => SetButtonText("All Logs"))">All Logs</MudMenuItem>
+                    <MudMenuItem OnClick="@(() => SetButtonText("App Logs"))">App Logs</MudMenuItem>
+                    <MudMenuItem OnClick="@(() => SetButtonText("User Logs"))">User Logs</MudMenuItem>
+                </MudMenu>
+            </MudButtonGroup>
+        </ToolBarContent>
+        <HeaderContent >
+            <MudTh>Content</MudTh>
+            <MudTh>DateTime</MudTh>
+            <MudTh>LogType</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="HTTP Method">@context.Content</MudTd>
+            <MudTd DataLabel="URL">@context.DateTime</MudTd>
+            <MudTd DataLabel="Status">@context.LogType</MudTd>
+        </RowTemplate>
+       
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50 }"
+                           @bind-PageSize="pagination.PageSize"
+                           @bind-CurrentPage="pagination.PageNumber"
+                           TotalItems="@pagination.TotalCount" />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
+
+
