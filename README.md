@@ -1,6 +1,7 @@
 ﻿## ELEMockApi
-This is a lightweight mock server designed for API simulation. Built on Jint (JavaScript interpreter for .NET), it requires basic JavaScript knowledge to write rules and placeholders.
+This is a lightweight mock server designed for API simulation. Built on Jint (JavaScript interpreter for .NET), it requires basic JavaScript knowledge to write rules and placeholders and uses SQLite as database.
 
+> For calling your Api prepend your request Url with **mocked** for example  localhost:xx/originalapi/get =>  localhost:xx/mocked/originalapi/get
 
 ### Creating a Mock API Endpoint
 To set up a mocked API, you must define the following components:
@@ -36,7 +37,7 @@ To set up a mocked API, you must define the following components:
 
 ###### You must include a JavaScript function named evaluate that returns the appropriate HTTP status code (e.g., 200 (OK), 404 (Not Found), etc.) in the user interface panel.
 
-- he returned status code must be explicitly declared in the response.
+- its returned status code must be explicitly declared in the response.
 
 - This function can also be used to validate the request body, headers, or other parameters and return the corresponding response.
 
