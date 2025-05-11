@@ -1,5 +1,5 @@
 ﻿## ELEMockApi
-This is a lightweight mock server designed for API simulation. Built on Jint (JavaScript interpreter for .NET), it requires basic JavaScript knowledge to write rules and placeholders and uses SQLite as database.
+This is a lightweight mock server designed for API simulation with asp.net and blazor. Built on Jint (JavaScript interpreter for .NET), it requires basic JavaScript knowledge to write rules and placeholders and uses SQLite as database.
 
 > For calling your Api prepend your request Url with **mocked** for example  localhost:xx/originalapi/get =>  localhost:xx/mocked/originalapi/get
 
