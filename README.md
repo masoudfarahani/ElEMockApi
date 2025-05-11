@@ -105,8 +105,8 @@ function evaluate(){
 {
     "result": {
         "nickName" : "ELE", //static value is response
-        "name": "[$req.body.age$]",//this will replaced by age from request body
-        "age": "[$=>new Date()$]" // this will filled by date time
+        "age": "[$req.body.age$]",//this will replaced by age from request body
+        "date": "[$=>new Date()$]" // this will filled by date time
     }
 }
 ```
