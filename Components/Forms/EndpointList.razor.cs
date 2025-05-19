@@ -12,6 +12,8 @@ namespace ELE.MockApi.Components.Forms
         private List<MockEndpoint> endpoints = new();
         private PaginationModel pagination = new();
         private bool loading;
+        private string filter = "";
+
         protected override async Task OnInitializedAsync()
         {
             appEvents.OnNewEndpointAdded += LoadEndpointsAsync;
@@ -28,7 +30,7 @@ namespace ELE.MockApi.Components.Forms
             loading = true;
             try
             {
-                var (items, totalCount) = await EndpointService.GetEndpointsAsync(pagination.PageNumber, pagination.PageSize);
+                var (items, totalCount) = await EndpointService.GetEndpointsAsync(pagination.PageNumber, pagination.PageSize,filter);
                 endpoints = items;
                 pagination.TotalCount = totalCount;
                 StateHasChanged();
@@ -70,6 +72,30 @@ namespace ELE.MockApi.Components.Forms
             };
 
             await DialogService.ShowAsync<ResponseDetailDialog>("Response Details", parameters, options);
+        }
+
+
+        private async Task ShowRuleAndSchemaDetails(string content, string subject)
+        {
+            var parameters = new DialogParameters
+            {
+                ["Content"] = content
+            };
+
+            var options = new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true
+            };
+
+            await DialogService.ShowAsync<RuleAndSchemaDetailDialog>($"{subject} Details", parameters, options);
+        }
+
+        private async Task OnSearch(string text)
+        {
+            filter = text.ToString();
+            await LoadEndpointsAsync();
         }
     }
 }

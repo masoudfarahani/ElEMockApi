@@ -23,13 +23,14 @@ namespace ELE.MockApi.Core.Service
             {
                 Id = Guid.NewGuid(),
                 Status = r.Status,
-                Body = r.Body
+                Body = r.Body,
             }).ToList();
 
             var endpoint = new MockEndpoint(model.HttpMethod, model.BaseUrl, responses)
             {
                 Id = Guid.NewGuid(),
-                Rule = model.Rule
+                Rule = model.Rule,
+                RequestBodySchema = model.RequestBodySchema,
             };
 
             _dbContext.Endpoints.Add(endpoint);
@@ -61,6 +62,7 @@ namespace ELE.MockApi.Core.Service
             existingEndpoint.HttpMethod = model.HttpMethod;
             existingEndpoint.BaseUrl = model.BaseUrl;
             existingEndpoint.Rule = model.Rule;
+            existingEndpoint.RequestBodySchema = model.RequestBodySchema;
 
             // Clear existing responses
             existingEndpoint.Responses.Clear();
@@ -80,11 +82,15 @@ namespace ELE.MockApi.Core.Service
             return existingEndpoint;
         }
 
-        public async Task<(List<MockEndpoint> Items, int TotalCount)> GetEndpointsAsync(int pageNumber, int pageSize)
+        public async Task<(List<MockEndpoint> Items, int TotalCount)> GetEndpointsAsync(int pageNumber, int pageSize, string filter = "")
         {
-            var query = _dbContext.Endpoints
-                .Include(e => e.Responses)
-                .OrderByDescending(e => e.BaseUrl);
+            var query = _dbContext.Endpoints.Include(e => e.Responses).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+                query = query.Where(e => e.BaseUrl.Contains(filter));
+
+
+            query = query.OrderByDescending(e => e.BaseUrl);
 
             var totalCount = await query.CountAsync();
             var items = await query
@@ -134,4 +140,4 @@ namespace ELE.MockApi.Core.Service
             await _dbContext.SaveChangesAsync();
         }
     }
-} 
+}

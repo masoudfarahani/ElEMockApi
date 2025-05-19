@@ -8,6 +8,8 @@ namespace ELE.MockApi.Core.FormModels
         public AvailableHttpMethods HttpMethod { get; set; }
         public string BaseUrl { get;  set; } = "";
         public string? Rule { get; set; }
+        public string? RequestBodySchema { get; set; }
+
         public List<CreateOrUpdateResponseModel> Responses { get; set; } = [];
     }
 

@@ -36,19 +36,26 @@ namespace ELE.MockApi.Components.Forms
             this.model.Rule = prettyJs;
             StateHasChanged();
         }
+        public void BeautifyBodySchema()
+        {
+            string prettyJs = beautifier.Beautify(model.RequestBodySchema);
+            this.model.RequestBodySchema = prettyJs;
+            StateHasChanged();
+        }
+
 
         public void BeautifyResponseBody(Guid rsponseId)
         {
-            var resp = this.model.Responses.FirstOrDefault(c=>c.Id== rsponseId);   
+            var resp = this.model.Responses.FirstOrDefault(c => c.Id == rsponseId);
             string prettyJs = beautifier.Beautify(resp.Body);
-            resp.Body= prettyJs;
+            resp.Body = prettyJs;
             StateHasChanged();
         }
 
         private string ValidateBaseUrl(string url)
         {
             string pattern = @"^((https?:\/\/)?([\w-]+\.)+[\w-]+)?(\/[\w\-.\/?%&=]*)?$";
-            return Regex.IsMatch(model.BaseUrl, pattern, RegexOptions.IgnoreCase)?"":"Invalid url";
+            return Regex.IsMatch(model.BaseUrl, pattern, RegexOptions.IgnoreCase) ? "" : "Invalid url";
         }
 
         public void Dispose()
@@ -63,6 +70,7 @@ namespace ELE.MockApi.Components.Forms
                 BaseUrl = _model.BaseUrl,
                 HttpMethod = _model.HttpMethod,
                 Rule = _model.Rule,
+                RequestBodySchema = _model.RequestBodySchema,
                 Responses = _model.Responses.Select(c => new CreateOrUpdateResponseModel { Id = c.Id, Body = c.Body, Status = c.Status }).ToList()
 
             };

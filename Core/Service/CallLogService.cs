@@ -21,7 +21,10 @@ namespace ELE.MockApi.Core.Service
         }
 
 
-
+        public async Task Clear()
+        {
+            await _dbContext.Database.ExecuteSqlRawAsync("DELETE FROM [CallLogs]");
+        }
         public async Task<(List<ApiCallLog> Items, int TotalCount)> GetApiCallLogsAsync(int pageNumber, int pageSize, string urlFilter = "")
         {
             var query = _dbContext.CallLogs.AsQueryable();

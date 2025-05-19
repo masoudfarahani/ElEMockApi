@@ -12,24 +12,38 @@
 @implements IDisposable
 <MudPaper Class="pa-4">
     <MudTable Items="@endpoints" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@loading">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Endpoints</MudText>
+
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
         <HeaderContent>
             <MudTh>HTTP Method</MudTh>
             <MudTh>Base URL</MudTh>
             <MudTh>Rule</MudTh>
+            <MudTh>Body Schema</MudTh>
             <MudTh>Responses</MudTh>
             <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="HTTP Method">@context.HttpMethod</MudTd>
             <MudTd DataLabel="Base URL">@context.BaseUrl</MudTd>
-            <MudTd DataLabel="Rule">@context.Rule</MudTd>
+            <MudTd DataLabel="Rule">
+                <MudIconButton DataLabel="Rule" Icon="@Icons.Material.Filled.PanoramaFishEye" OnClick="@(()=>ShowRuleAndSchemaDetails(context?.Rule??"---","Rule"))"></MudIconButton>
+            </MudTd>
+            <MudTd DataLabel="Body Schema">
+                <MudIconButton DataLabel="Body Schema" Icon="@Icons.Material.Filled.PanoramaFishEye" OnClick="@(()=>ShowRuleAndSchemaDetails(context?.RequestBodySchema??"---","Request Body Schema"))"></MudIconButton>
+            </MudTd>
+            @*   <MudTd DataLabel="Rule">@context.Rule</MudTd>
+            <MudTd DataLabel="Body Schema">@context.RequestBodySchema</MudTd> *@
             <MudTd DataLabel="Responses">
                 @foreach (var response in context.Responses)
                 {
                     <MudChip T="HttpStatus" Color="Color.Primary" Size="Size.Small" Class="mr-1" OnClick="@(() => ShowResponseDetails(response))">@response.Status</MudChip>
                 }
             </MudTd>
-            <MudTd >
+            <MudTd>
                 <MudIconButton OnClick="()=>DeleteEndpoint(context.Id)" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"></MudIconButton>
                 <MudIconButton OnClick="()=>SelectForUpdate(context)" Icon="@Icons.Material.Filled.Edit" aria-label="delete" Color="Color.Warning"></MudIconButton>
             </MudTd>

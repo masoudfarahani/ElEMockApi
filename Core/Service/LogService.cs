@@ -19,7 +19,10 @@ namespace ELE.MockApi.Core.Service
             await _dbContext.SaveChangesAsync();
         }
 
-
+        public async Task Clear()
+        {
+            await _dbContext.Database.ExecuteSqlRawAsync("DELETE FROM [Logs]");
+        }
 
         public async Task<(List<Log> Items, int TotalCount)> GetLogsAsync(int pageNumber, int pageSize, LogType? logType)
         {

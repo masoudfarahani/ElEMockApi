@@ -12,11 +12,13 @@
 @rendermode InteractiveServer
 
 <MudPaper Class="pa-4">
-    <MudTable Items="@logs" Dense="true" Hover="true" Bordered="true"  Striped="true" Loading="@loading">
+    <MudTable Items="@logs" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@loading">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Api call logs</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.PlaylistRemove" Color="Color.Error"   OnClick="ShowConfirmClear" />
+
             <MudSpacer />
-            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))"  Placeholder="Search"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
             <MudTh>HTTP Method</MudTh>
@@ -37,7 +39,7 @@
             </MudTd>
 
         </RowTemplate>
-       
+
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50 }"
                            @bind-PageSize="pagination.PageSize"

@@ -6,19 +6,14 @@ namespace ELE.MockApi.Controllers.MiddleWare
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
-        public LogService _logservice { get; set; }
-
-        public ExceptionMiddleware(LogService logservice)
-        {
-            _logservice = logservice;
-        }
 
         public ExceptionMiddleware(RequestDelegate next)
         {
+            //_logservice = logservice;
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, LogService logservice)
         {
 
 
@@ -28,7 +23,7 @@ namespace ELE.MockApi.Controllers.MiddleWare
             }
             catch (Exception ex)
             {
-                await _logservice.Add(new Log(ex.Message) { LogType = LogType.AppLog });
+                await logservice.Add(new Log(ex.Message) { LogType = LogType.AppLog });
                 context.Response.StatusCode = 500;
                 await context.Response.WriteAsync("Internal server error");
             }

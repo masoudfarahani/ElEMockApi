@@ -10,22 +10,36 @@
 @implements IDisposable
 <MudPaper Class="pa-4">
     <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-        <MudSelect T="AvailableHttpMethods"
-                   Label="HTTP Method"
-                   @bind-Value="model.HttpMethod"
-                   Required="true"
-                   AnchorOrigin="Origin.BottomLeft"
-                   Strict="true"
-                   Clearable="true">
-            @foreach (var method in Enum.GetValues<AvailableHttpMethods>())
+        <MudStack Breakpoint="Breakpoint.Md">
+            <MudSelect T="AvailableHttpMethods"
+                       Label="HTTP Method"
+                       @bind-Value="model.HttpMethod"
+                       Required="true"
+                       AnchorOrigin="Origin.BottomLeft"
+                       Strict="true"
+                       Clearable="true">
+                @foreach (var method in Enum.GetValues<AvailableHttpMethods>())
+                {
+                    <MudSelectItem Value="@method">@method</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSpacer />
+            <MudTextField T="string" @bind-Value="model.BaseUrl" Variant="Variant.Outlined" Label="Base URL" Required="true" RequiredError="Base URL is required!" Validation="@(new Func<string, string>(ValidateBaseUrl))" />
+
+            <MudSpacer />
+
+
+            <MudTextField @bind-Value="model.Rule" Label="Rule" Variant="Variant.Outlined" Lines="6" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AutoFixHigh" OnAdornmentClick="BeautifyRule" />
+
+            <MudSpacer />
+
+            @if (model.HttpMethod != AvailableHttpMethods.Get)
             {
-                <MudSelectItem Value="@method">@method</MudSelectItem>
+                <MudTextField @bind-Value="model.RequestBodySchema" Label="Request Body Schema" Variant="Variant.Outlined" Lines="6" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AutoFixHigh" OnAdornmentClick="BeautifyBodySchema" />
             }
-        </MudSelect>
 
-        <MudTextField T="string" @bind-Value="model.BaseUrl" Label="Base URL" Required="true" RequiredError="Base URL is required!" Validation="@(new Func<string, string>(ValidateBaseUrl))" />
-
-        <MudTextField @bind-Value="model.Rule" Label="Rule"  Lines="6" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AutoAwesome" OnAdornmentClick="BeautifyRule" />
+        </MudStack>
+        @*  <MudTextField @bind-Value="model.Rule" Label="Rule"  Lines="6" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AutoFixHigh" OnAdornmentClick="BeautifyRule" /> *@
 
 
 
@@ -40,6 +54,7 @@
                            Label="HTTP Status"
                            @bind-Value="response.Status"
                            Required="true"
+                           Variant="Variant.Outlined"
                            AnchorOrigin="Origin.BottomLeft"
                            Strict="true"
                            Clearable="true">
@@ -49,7 +64,7 @@
                     }
                 </MudSelect>
 
-                <MudTextField @bind-Value="response.Body" Label="Response Body" Required="false"  Lines="6" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AutoAwesome" OnAdornmentClick="@(()=>BeautifyResponseBody(response.Id))" />
+                <MudTextField @bind-Value="response.Body" Variant="Variant.Outlined" Label="Response Body" Required="false" Lines="6" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AutoFixHigh" OnAdornmentClick="@(()=>BeautifyResponseBody(response.Id))" />
                 <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => RemoveResponse(response))" Class="mt-2">Remove Response</MudButton>
             </MudPaper>
         }

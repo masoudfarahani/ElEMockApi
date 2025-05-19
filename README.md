@@ -12,6 +12,8 @@ To set up a mocked API, you must define the following components:
 
 - Rule 
 
+- Request Body Scheme(if there is any body and you have any validation)
+
 - Responses
 
 ### Http Methods:
@@ -87,6 +89,10 @@ function evaluate(){
     //you must declare all posible status codes in responses (400,200 and 500)
 }
 ```
+### Request body schema :
+It's a standard JSON schema used to validate the request body(optional).
+
+
 
 ### Responses :
 ###### Define your response body and the corresponding HTTP status code (in a panel with a user interface).

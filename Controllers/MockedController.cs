@@ -7,6 +7,7 @@ using Jint.Runtime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NJsonSchema;
 using System.Text.Json;
 using System.Web;
 namespace ELE.MockApi.Controllers
@@ -35,7 +36,7 @@ namespace ELE.MockApi.Controllers
 
         public async Task<IActionResult> Action(string url, object? requestBody)
         {
-            
+
             var requestPath = HttpUtility.UrlDecode($"/{url}").ToLower();
             var method = this.HttpContext.Request.Method.ToLower();
             var headers = this.HttpContext.Request.Headers;
@@ -52,6 +53,16 @@ namespace ELE.MockApi.Controllers
             if (endpoint == null)
                 return NotFound(value: "can not find mocked api");
 
+            if (!string.IsNullOrWhiteSpace(endpoint.RequestBodySchema))
+            {
+                var requestBodyIsValid = await ValidateRequestBody(endpoint, requestBody);
+                if (!requestBodyIsValid.isValid)
+                {
+                    await LogCall(this.HttpContext.Request.Path, requestBody, method, headers, 400, JsonSerializer.Serialize(requestBodyIsValid.errors));
+                    return BadRequest(requestBodyIsValid.errors);
+                }
+
+            }
 
             int status = 200;
 
@@ -70,9 +81,9 @@ namespace ELE.MockApi.Controllers
 
             var result = evaluator.PrepareResponseBody(availableResponse.Body);
 
-           await LogCall(this.HttpContext.Request.Path,requestBody, method, headers, status, result);
+            await LogCall(this.HttpContext.Request.Path, requestBody, method, headers, status, result);
 
-           
+
 
             if (result != null)
                 return StatusCode(status, JsonSerializer.Deserialize<object>(result, new JsonSerializerOptions { WriteIndented = true }));
@@ -89,6 +100,20 @@ namespace ELE.MockApi.Controllers
             };
 
             await callLogService.Add(log);
+        }
+
+        private async Task<(bool isValid,List<string> errors)> ValidateRequestBody(MockEndpoint endpoint, object body)
+        {
+
+
+            var schema = await JsonSchema.FromJsonAsync(endpoint.RequestBodySchema);
+            var requestBodyJson = JsonSerializer.Serialize(body);
+            var errors = schema.Validate(requestBodyJson);
+
+            if (errors.Count == 0)
+                return (true, []);
+
+            return (false,errors.Select(c=>c.ToString()).ToList());
         }
     }
 }

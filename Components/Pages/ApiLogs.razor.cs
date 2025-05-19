@@ -4,6 +4,9 @@ using static MudBlazor.Colors;
 using System;
 using ELE.MockApi.Components.Forms;
 using MudBlazor;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace ELE.MockApi.Components.Pages
 {
@@ -23,7 +26,7 @@ namespace ELE.MockApi.Components.Pages
             loading = true;
             try
             {
-                var (items, totalCount) = await CallLogService.GetApiCallLogsAsync(pagination.PageNumber, pagination.PageSize,filterUrl);
+                var (items, totalCount) = await CallLogService.GetApiCallLogsAsync(pagination.PageNumber, pagination.PageSize, filterUrl);
                 logs = items;
                 pagination.TotalCount = totalCount;
                 //StateHasChanged();
@@ -57,6 +60,31 @@ namespace ELE.MockApi.Components.Pages
             await DialogService.ShowAsync<LogDetailDialog>("Log Details", parameters, options);
         }
 
+        private async Task ClearLogs()
+        {
+
+            await CallLogService.Clear();
+            await LoadLogsAsync();
+        }
+
+
+        private async Task ShowConfirmClear()
+        {
+            var parameters = new DialogParameters
+            {
+                { "Subject","Api Call Logs"},
+                { "OnConfirm", EventCallback.Factory.Create(this,ClearLogs)}
+            };
+
+            var options = new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = false
+            };
+
+            await DialogService.ShowAsync<ConfirmDialog>("Clear Api Call Log", parameters, options);
+        }
 
         private async Task OnSearch(string text)
         {

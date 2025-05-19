@@ -4,6 +4,8 @@ using static MudBlazor.Colors;
 using System;
 using ELE.MockApi.Components.Forms;
 using MudBlazor;
+using ELE.MockApi.Core.Service;
+using Microsoft.AspNetCore.Components;
 
 namespace ELE.MockApi.Components.Pages
 {
@@ -64,6 +66,32 @@ namespace ELE.MockApi.Components.Pages
                 loading = false;
             }
         }
-    
+
+        private async Task ClearLogs()
+        {
+
+            await LogService.Clear();
+            await LoadLogsAsync();
+        }
+
+
+        private async Task ShowConfirmClear()
+        {
+            var parameters = new DialogParameters
+            {
+                { "Subject","Logs"},
+                { "OnConfirm", EventCallback.Factory.Create(this,ClearLogs)}
+            };
+
+            var options = new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = false
+            };
+
+            await DialogService.ShowAsync<ConfirmDialog>("Clear Log", parameters, options);
+        }
+
     }
 }

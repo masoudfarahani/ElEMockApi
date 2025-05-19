@@ -1,0 +1,26 @@
+﻿@using ELE.MockApi.Core.Models
+@using ELE.MockApi.Core.Service
+@using ELE.MockApi.Core.FormModels
+@using MudBlazor
+@using ELE.MockApi.Core.Models
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Class="pa-4 mt-2" Style="max-height: 400px; overflow-y: auto;">
+            <pre><code>@Content</code></pre>
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Cancel">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+    [Parameter] public string Content { get; set; }
+
+
+    void Cancel() => MudDialog.Close();
+}
