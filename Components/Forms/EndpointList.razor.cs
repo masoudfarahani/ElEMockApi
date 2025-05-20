@@ -3,6 +3,7 @@ using ELE.MockApi.Core.FormModels;
 using ELE.MockApi.Core.Models;
 using ELE.MockApi.Core.Service;
 using ELE.MockApi.Shared;
+using Microsoft.JSInterop;
 using MudBlazor;
 
 namespace ELE.MockApi.Components.Forms
@@ -55,6 +56,7 @@ namespace ELE.MockApi.Components.Forms
         private async Task SelectForUpdate(MockEndpoint model)
         {
             await appEvents.NotifyEndpointSelected(model);
+            await JSRuntime.InvokeVoidAsync("scrollToTop");
         }
 
         private async Task ShowResponseDetails(AvailableResponse response)

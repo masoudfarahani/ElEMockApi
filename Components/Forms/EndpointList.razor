@@ -10,11 +10,12 @@
 @rendermode InteractiveServer
 @inject AppEvents appEvents
 @implements IDisposable
-<MudPaper Class="pa-4">
-    <MudTable Items="@endpoints" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@loading">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Endpoints</MudText>
+@inject IJSRuntime JSRuntime
 
+<MudPaper Class="pa-4">
+    <MudTable  Items="@endpoints" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@loading">
+        <ToolBarContent >
+            <MudText Typo="Typo.h6">Endpoints</MudText>
             <MudSpacer />
             <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
@@ -50,7 +51,7 @@
 
         </RowTemplate>
         <PagerContent>
-            <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50 }"
+            <MudTablePager PageSizeOptions="new int[] { 10, 25, 50 }"
                            @bind-PageSize="pagination.PageSize"
                            @bind-CurrentPage="pagination.PageNumber"
                            TotalItems="@pagination.TotalCount" />
