@@ -52,10 +52,8 @@ namespace ELE.MockApi.Core.Service
             if (headers.Any())
             {
                 var headerJson = JsonSerializer.Serialize(headers);
-
+                headerJson = headerJson.Replace("\\u0022", "");
                 Engine.Execute($"var {KeywordsReplacements.RequestHeaders} = JSON.parse('{headerJson}');");
-
-                //Engine.SetValue(KeywordsReplacements.RequestHeaders, headerJson);
             }
         }
 

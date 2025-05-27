@@ -28,7 +28,8 @@ public class Program
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
         builder.Services.AddSingleton<AppEvents>();
-        builder.Services.AddControllers(options => {
+        builder.Services.AddControllers(options =>
+        {
             options.Filters.Add(new ContentTypeFilter());
         });
 
@@ -39,6 +40,18 @@ public class Program
         builder.Services.AddMudServices();
 
         builder.Services.AddEndpointsApiExplorer();
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("corsPolicy",
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
+                                  });
+        });
+
         var app = builder.Build();
 
         // Apply pending migrations
@@ -61,7 +74,7 @@ public class Program
 
         app.UseStaticFiles();
         app.UseAntiforgery();
-
+        app.UseCors("corsPolicy");
         app.MapControllers();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
